@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -18,28 +19,36 @@ public class DropDownMethods {
     
 	public DropDownMethods(WebDriver driver) {
 
-		this.driver = driver;
+	   this.driver = driver;
 		
-       this.wait=new WebDriverWait(driver, Duration.ofSeconds(30));
+       this.wait=new WebDriverWait(driver, Duration.ofSeconds(60));
         
         
 	} 
 
 	public void selectbytextList(WebDriver driver,By dropdownlocator, By optionlocator,String visibletext) {
 
-		WebElement drpelement = wait.until(ExpectedConditions.visibilityOfElementLocated(dropdownlocator));
-        drpelement.click();
+		WebElement drpelement = wait.until(ExpectedConditions.elementToBeClickable(dropdownlocator));
+	
+		//    drpelement.click();
+
+
+			JavascriptExecutor js = (JavascriptExecutor) driver;
+			js.executeScript("arguments[0].scrollIntoView(true);", drpelement);
+			js.executeScript("arguments[0].click();", drpelement);
+
+	
 		
 		// find all elements in options
         List<WebElement> options = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(optionlocator));
 		
 		for(int i=0;i<options.size();i++) {
 			
-		if(options.get(i).getText().equals(visibletext)) {
+		if(options.get(i).getText().equalsIgnoreCase(visibletext)) {
 			
 			options.get(i).click();
 			
-		//	break;
+		   break;
 			
 		}
 
@@ -85,9 +94,7 @@ public class DropDownMethods {
 		
 		options.get(index).click();
 		
-		
-
-		 
+	
 		 
 	 }
 	
